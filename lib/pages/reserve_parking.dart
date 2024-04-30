@@ -128,7 +128,7 @@ class _ReserveParkingState extends State<ReserveParking> {
                 onPressed: (){
                   Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => HomePage())
+                      MaterialPageRoute(builder: (context) => HomeScreen())
                   );
                 },
                 style: const ButtonStyle(
