@@ -6,7 +6,8 @@ import 'package:smartpark_app/models/parking_lot.dart';
 import 'package:smartpark_app/pages/reserve_parking.dart';
 
 class ParkingDetail extends StatelessWidget {
-  ParkingDetail({super.key});
+  final int id; // Agregar el parámetro id
+  ParkingDetail({required this.id, Key? key}) : super(key: key);
 
   ParkingLot? parkingLot;
 
@@ -27,34 +28,33 @@ class ParkingDetail extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Iphone 9"
+        appBar: AppBar(
+          title: Text(
+              "Iphone 9"
+          ),
         ),
-      ),
-      body: FutureBuilder(
-        future: getParkDetail(1),
-        builder: (context, snapshot){
-          if (snapshot.connectionState == ConnectionState.done) {
-            return Stack(
-              children: [
-                SizedBox(
-                  width: double.infinity,
-                  child: Image.network(parkingLot!.imageUrl),
-                ),
-                scroll()
-              ],
-            );
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
-      )
+        body: FutureBuilder(
+          future: getParkDetail(id), // Usar el id proporcionado
+          builder: (context, snapshot){
+            if (snapshot.connectionState == ConnectionState.done) {
+              return Stack(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: Image.network(parkingLot!.imageUrl),
+                  ),
+                  scroll()
+                ],
+              );
+            } else {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          },
+        )
     );
   }
-
 
   scroll(){
     return DraggableScrollableSheet(
