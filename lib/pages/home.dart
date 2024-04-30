@@ -172,21 +172,19 @@ class CardHome extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Row(
           children: <Widget>[
-            // Imagen del producto
             Container(
               width: 100,
               height: 100,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 image: DecorationImage(
-                  image: NetworkImage(imageUrl), // URL de la imagen
+                  image: NetworkImage(imageUrl),
                   fit: BoxFit.cover,
                 ),
               ),
             ),
-            const SizedBox(width: 16), // Espacio entre la imagen y los datos
+            const SizedBox(width: 16),
 
-            // Detalles del producto
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

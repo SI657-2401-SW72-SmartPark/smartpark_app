@@ -34,7 +34,7 @@ class ParkingDetail extends StatelessWidget {
           ),
         ),
         body: FutureBuilder(
-          future: getParkDetail(id), // Usar el id proporcionado
+          future: getParkDetail(id),
           builder: (context, snapshot){
             if (snapshot.connectionState == ConnectionState.done) {
               return Stack(
