@@ -150,10 +150,7 @@ class _UserInfoState extends State<UserInfo> {
               SizedBox(height: 20.0,),
               ElevatedButton(
                 onPressed: (){
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ParkingDetail())
-                  );
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
                 },
                 style: const ButtonStyle(
                   backgroundColor: MaterialStatePropertyAll(Colors.lightBlueAccent),
