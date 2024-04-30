@@ -29,7 +29,7 @@ class _UserInfoState extends State<UserInfo> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        margin: EdgeInsets.only(top: 100.0),
+        margin: EdgeInsets.only(top: 200.0),
         padding: EdgeInsets.all(20.0),
         child: Center(
           child: Column(
