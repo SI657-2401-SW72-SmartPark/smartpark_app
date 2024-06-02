@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:smartpark_app/pages/renter/parking_detail.dart';
+import 'package:smartpark_app/pages/shared/navbar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -70,14 +71,15 @@ class _HomeScreenState extends State<HomeScreen> {
               child: CardHome(
                 title: product['title'],
                 description: product['description'],
-                price: (product['price'] as num).toInt(),  // Ensure price is int
-                rating: (product['rating'] as num).toDouble(),  // Ensure rating is double
+                price: (product['price'] as num).toInt(),
+                rating: (product['rating'] as num).toDouble(),
                 imageUrl: product['images'][0],
               ),
             );
           },
         ),
       ),
+      bottomNavigationBar: NavBar(),
     );
   }
 }
