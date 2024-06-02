@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smartpark_app/pages/login/login.dart';
 import 'package:smartpark_app/pages/renter/booking.dart';
 import 'package:smartpark_app/pages/renter/home.dart';
-import 'package:smartpark_app/pages/renter/profile.dart'; // Importa la pantalla de perfil cuando esté implementada
+import 'package:smartpark_app/pages/shared/profile.dart'; // Importa la pantalla de perfil cuando esté implementada
 
 void main() {
   runApp(const MyApp());
