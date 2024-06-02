@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:smartpark_app/pages/parking_detail.dart';
@@ -35,8 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _filterProducts(String query) {
     setState(() {
       _filteredProducts = _products
-          .where((product) =>
-          product['title'].toLowerCase().contains(query.toLowerCase()))
+          .where((product) => product['title'].toLowerCase().contains(query.toLowerCase()))
           .toList();
     });
   }
@@ -72,8 +70,8 @@ class _HomeScreenState extends State<HomeScreen> {
               child: CardHome(
                 title: product['title'],
                 description: product['description'],
-                price: product['price'],
-                rating: product['rating'],
+                price: (product['price'] as num).toInt(),  // Ensure price is int
+                rating: (product['rating'] as num).toDouble(),  // Ensure rating is double
                 imageUrl: product['images'][0],
               ),
             );
@@ -126,8 +124,7 @@ class ProductSearch extends SearchDelegate<String> {
   Widget _buildSuggestions() {
     final List<dynamic> filteredList = query.isEmpty
         ? products
-        : products
-        .where((product) =>
+        : products.where((product) =>
         product['title'].toLowerCase().contains(query.toLowerCase()))
         .toList();
 
@@ -184,7 +181,6 @@ class CardHome extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 16),
-
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -203,7 +199,7 @@ class CardHome extends StatelessWidget {
                     children: List.generate(
                       5,
                           (index) => Icon(
-                        index < rating ? Icons.star : Icons.star_border,
+                        index < rating.round() ? Icons.star : Icons.star_border,
                         color: Colors.yellow,
                         size: 24,
                       ),
