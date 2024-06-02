@@ -140,8 +140,8 @@ class _UserInfoState extends State<UserInfo> {
                       disabledBorder: InputBorder.none,
                       contentPadding:
                       EdgeInsets.only(left: 15, bottom: 11, top: 11, right: 15),
-                      prefixIcon: Icon(Icons.cake), //icon of text field
-                      hintText: "Cumpleaños" //label text of field
+                      prefixIcon: Icon(Icons.cake),
+                      hintText: "Cumpleaños"
                   ),
                 )
               ),

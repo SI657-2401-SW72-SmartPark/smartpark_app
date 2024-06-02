@@ -5,7 +5,7 @@ import 'package:smartpark_app/models/parking_lot.dart';
 import 'package:smartpark_app/pages/renter/reserve_parking.dart';
 
 class ParkingDetail extends StatelessWidget {
-  final int id; // Agregar el parámetro id
+  final int id;
   ParkingDetail({required this.id, Key? key}) : super(key: key);
 
   Future<ParkingLot> getParkDetail(int id) async {
@@ -17,7 +17,7 @@ class ParkingDetail extends StatelessWidget {
       parkingLotData["title"],
       parkingLotData["description"],
       parkingLotData["images"][0],
-      parkingLotData["price"].toInt(), // Convertimos price a int si es double
+      parkingLotData["price"].toInt(),
     );
   }
 

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:smartpark_app/pages/renter/home.dart';
-import 'package:smartpark_app/pages/renter/parking_detail.dart';
 
 class ReserveParking extends StatefulWidget {
   const ReserveParking({super.key});
