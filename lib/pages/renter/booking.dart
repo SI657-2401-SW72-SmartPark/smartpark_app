@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:smartpark_app/pages/renter/parking_detail.dart';
+import 'package:smartpark_app/pages/renter/booking_detail.dart';
 import 'package:smartpark_app/pages/shared/navbar.dart';
 
 class ReservationsScreen extends StatefulWidget {
@@ -51,7 +51,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ParkingDetail(id: reservation['id']),
+                    builder: (context) => ReservationDetailScreen(id: reservation['id']),
                   ),
                 );
               },
