@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:smartpark_app/models/parking_lot.dart';
-import 'package:smartpark_app/pages/reserve_parking.dart';
+import 'package:smartpark_app/pages/renter/reserve_parking.dart';
 
 class ParkingDetail extends StatelessWidget {
   final int id; // Agregar el parámetro id

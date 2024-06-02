@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:smartpark_app/pages/home.dart';
-import 'package:smartpark_app/pages/parking_detail.dart';
+import 'package:smartpark_app/pages/renter/home.dart';
+import 'package:smartpark_app/pages/renter/parking_detail.dart';
 
 class ReserveParking extends StatefulWidget {
   const ReserveParking({super.key});
@@ -118,8 +118,8 @@ class _ReserveParkingState extends State<ReserveParking> {
                         disabledBorder: InputBorder.none,
                         contentPadding:
                         EdgeInsets.only(left: 15, bottom: 11, top: 11, right: 15),
-                        prefixIcon: Icon(Icons.calendar_month), //icon of text field
-                        hintText: "Fecha" //label text of field
+                        prefixIcon: Icon(Icons.calendar_month),
+                        hintText: "Fecha"
                     ),
                   )
               ),

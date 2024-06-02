@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smartpark_app/pages/user_info.dart';
+import 'package:smartpark_app/pages/login/user_info.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});

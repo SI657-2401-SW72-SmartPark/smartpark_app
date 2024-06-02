@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smartpark_app/pages/login.dart';
+import 'package:smartpark_app/pages/login/login.dart';
 
 void main() {
   runApp(const MyApp());

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:smartpark_app/pages/home.dart';
-import 'package:smartpark_app/pages/register.dart';
+import 'package:smartpark_app/pages/renter/home.dart';
+import 'package:smartpark_app/pages/login/register.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
