@@ -73,7 +73,7 @@ class ReservationDetailScreen extends StatelessWidget {
                     children: [
                       Icon(Icons.access_time),
                       SizedBox(width: 5),
-                      Text('De 9:30 PM a 11:00 PM'), // Usar datos reales de la reserva
+                      Text('De 9:30 PM a 11:00 PM'),
                     ],
                   ),
                   SizedBox(height: 10),
@@ -81,7 +81,7 @@ class ReservationDetailScreen extends StatelessWidget {
                     children: [
                       Icon(Icons.timer),
                       SizedBox(width: 5),
-                      Text('2:00 Hours'), // Usar datos reales de la reserva
+                      Text('2:00 Hours'),
                     ],
                   ),
                   SizedBox(height: 10),
@@ -97,7 +97,7 @@ class ReservationDetailScreen extends StatelessWidget {
                     children: [
                       Icon(Icons.directions_car),
                       SizedBox(width: 5),
-                      Text('PCS-123'), // Usar datos reales de la reserva
+                      Text('PCS-123'),
                     ],
                   ),
                   SizedBox(height: 20),
