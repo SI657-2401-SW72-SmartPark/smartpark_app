@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:smartpark_app/pages/renter/parking_detail.dart';
+import 'package:smartpark_app/pages/shared/navbar.dart';
 
 class ReservationsScreen extends StatefulWidget {
   const ReservationsScreen({Key? key}) : super(key: key);
@@ -56,16 +57,17 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
               },
               child: ReservationCard(
                 title: reservation['title'],
-                address: 'Av. Ejemplo 123', // Usar datos reales de la reserva
-                date: '19-01-2022', // Usar datos reales de la reserva
-                time: 'De 9:30 PM a 11:00 PM', // Usar datos reales de la reserva
-                status: 'Activo', // Usar datos reales de la reserva
+                address: 'Av. Ejemplo 123',
+                date: '19-01-2022',
+                time: 'De 9:30 PM a 11:00 PM',
+                status: 'Activo',
                 imageUrl: reservation['images'][0],
               ),
             );
           },
         ),
       ),
+      bottomNavigationBar: NavBar(),
     );
   }
 }
