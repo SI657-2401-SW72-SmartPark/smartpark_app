@@ -16,7 +16,7 @@ class ProfileScreen extends StatelessWidget {
         title: Text('Perfil'),
       ),
       body: Container(
-        margin: EdgeInsets.all(16.0), // Añadir un margen de 16.0 en todos los lados
+        margin: EdgeInsets.all(16.0),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -32,27 +32,25 @@ class ProfileScreen extends StatelessWidget {
               _buildProfileTextField('Dirección de domicilio', _direccionController),
               _buildProfileTextField('Fecha de cumpleaños', _cumpleanosController),
               SizedBox(height: 20),
-              SizedBox( // Usar SizedBox para definir el ancho de los botones
-                width: double.infinity, // Ancho infinito para que los botones ocupen todo el espacio disponible
+              SizedBox(
+                width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Acción para editar el perfil
                   },
                   style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white, backgroundColor: Color(0xFF02BBD2), // Color del texto
+                    foregroundColor: Colors.white, backgroundColor: Color(0xFF02BBD2),
                   ),
                   child: Text('Editar perfil'),
                 ),
               ),
               SizedBox(height: 20),
-              SizedBox( // Usar SizedBox para definir el ancho de los botones
-                width: double.infinity, // Ancho infinito para que los botones ocupen todo el espacio disponible
+              SizedBox(
+                width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Acción para cerrar sesión
                   },
                   style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white, backgroundColor: Color(0xFF02BBD2), // Color del texto
+                    foregroundColor: Colors.white, backgroundColor: Color(0xFF02BBD2),
                   ),
                   child: Text('Cerrar sesión'),
                 ),

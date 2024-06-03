@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smartpark_app/pages/login/login.dart';
 import 'package:smartpark_app/pages/renter/booking.dart';
 import 'package:smartpark_app/pages/shared/home.dart';
-import 'package:smartpark_app/pages/shared/profile.dart'; // Importa la pantalla de perfil cuando esté implementada
+import 'package:smartpark_app/pages/shared/profile.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => const LoginPage(),
         '/home': (context) => const HomeScreen(),
         '/reservations': (context) => const ReservationsScreen(),
-        '/profile': (context) => const ProfileScreen(), // Define la pantalla de perfil cuando esté implementada
+        '/profile': (context) => const ProfileScreen(),
       },
     );
   }

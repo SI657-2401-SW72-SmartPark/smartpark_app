@@ -23,8 +23,8 @@ class NavBar extends StatelessWidget {
         ),
       ],
       currentIndex: _getSelectedIndex(context),
-      selectedItemColor: Colors.blue, // Color de ícono y texto activo
-      unselectedItemColor: Colors.black, // Color de ícono y texto inactivo
+      selectedItemColor: Colors.blue,
+      unselectedItemColor: Colors.black,
       onTap: (index) {
         _onItemTapped(index, context);
       },

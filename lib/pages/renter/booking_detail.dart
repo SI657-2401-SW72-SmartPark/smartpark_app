@@ -57,7 +57,7 @@ class ReservationDetailScreen extends StatelessWidget {
                     children: [
                       Icon(Icons.location_on),
                       SizedBox(width: 5),
-                      Text('Av. Alameda sur 185 Chorrillos'), // Usar datos reales de la reserva
+                      Text('Av. Alameda sur 185 Chorrillos'),
                     ],
                   ),
                   SizedBox(height: 10),
@@ -65,7 +65,7 @@ class ReservationDetailScreen extends StatelessWidget {
                     children: [
                       Icon(Icons.calendar_today),
                       SizedBox(width: 5),
-                      Text('19-01-2022'), // Usar datos reales de la reserva
+                      Text('19-01-2022'),
                     ],
                   ),
                   SizedBox(height: 10),
