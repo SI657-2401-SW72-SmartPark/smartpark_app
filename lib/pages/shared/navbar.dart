@@ -7,18 +7,24 @@ class NavBar extends StatelessWidget {
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
-          label: 'Home',
+          label: 'Principal',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.local_parking),
+          label: 'Estacionamientos',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.calendar_today),
-          label: 'Reservations',
+          label: 'Reservaciones',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.person),
-          label: 'Profile',
+          label: 'Perfil',
         ),
       ],
       currentIndex: _getSelectedIndex(context),
+      selectedItemColor: Colors.blue, // Color de ícono y texto activo
+      unselectedItemColor: Colors.black, // Color de ícono y texto inactivo
       onTap: (index) {
         _onItemTapped(index, context);
       },
@@ -30,10 +36,12 @@ class NavBar extends StatelessWidget {
     switch (route) {
       case '/home':
         return 0;
-      case '/reservations':
+      case '/parking':
         return 1;
-      case '/profile':
+      case '/reservations':
         return 2;
+      case '/profile':
+        return 3;
       default:
         return 0;
     }
@@ -45,9 +53,12 @@ class NavBar extends StatelessWidget {
         Navigator.pushReplacementNamed(context, '/home');
         break;
       case 1:
-        Navigator.pushReplacementNamed(context, '/reservations');
+        Navigator.pushReplacementNamed(context, '/parking');
         break;
       case 2:
+        Navigator.pushReplacementNamed(context, '/reservations');
+        break;
+      case 3:
         Navigator.pushReplacementNamed(context, '/profile');
         break;
     }
