@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smartpark_app/pages/login/login.dart';
 import 'package:smartpark_app/pages/owner/parking_lots.dart';
-import 'package:smartpark_app/pages/renter/booking.dart';
+import 'package:smartpark_app/pages/renter/reservation.dart';
 import 'package:smartpark_app/pages/shared/home.dart';
 import 'package:smartpark_app/pages/shared/profile.dart';
 

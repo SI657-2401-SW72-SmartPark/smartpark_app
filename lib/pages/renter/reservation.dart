@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:smartpark_app/pages/renter/booking_detail.dart';
+import 'package:smartpark_app/pages/renter/reservation_detail.dart';
 import 'package:smartpark_app/pages/shared/navbar.dart';
 
 class ReservationsScreen extends StatefulWidget {
