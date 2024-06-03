@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:smartpark_app/pages/owner/parking_lots_detail.dart';
 import 'package:smartpark_app/pages/shared/navbar.dart';
+import 'package:smartpark_app/pages/owner/add_parking_lot.dart';
 
 class ParkingLotsScreen extends StatefulWidget {
   const ParkingLotsScreen({super.key});
@@ -33,13 +34,26 @@ class _ParkingLotsScreenState extends State<ParkingLotsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mis Reservas'),
+        title: Text('Mis Estacionamientos'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AddParkingLot(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: Center(
         child: ListView.builder(

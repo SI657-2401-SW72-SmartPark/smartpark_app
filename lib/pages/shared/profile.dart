@@ -26,11 +26,11 @@ class ProfileScreen extends StatelessWidget {
                 backgroundImage: NetworkImage('https://as2.ftcdn.net/v2/jpg/03/83/25/83/1000_F_383258331_D8imaEMl8Q3lf7EKU2Pi78Cn0R7KkW9o.jpg'),
               ),
               SizedBox(height: 20),
-              _buildProfileTextField('Nombre de usuario', _nombreController),
-              _buildProfileTextField('Correo electrónico', _correoController),
-              _buildProfileTextField('Número de teléfono', _numeroController),
-              _buildProfileTextField('Dirección de domicilio', _direccionController),
-              _buildProfileTextField('Fecha de cumpleaños', _cumpleanosController),
+              _buildProfileTextField(Icons.person, 'Nombre de usuario', _nombreController),
+              _buildProfileTextField(Icons.email, 'Correo electrónico', _correoController),
+              _buildProfileTextField(Icons.phone, 'Número de teléfono', _numeroController),
+              _buildProfileTextField(Icons.home, 'Dirección de domicilio', _direccionController),
+              _buildProfileTextField(Icons.cake, 'Fecha de cumpleaños', _cumpleanosController),
               SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
@@ -63,7 +63,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileTextField(String hintText, TextEditingController controller) {
+  Widget _buildProfileTextField(IconData icon, String hintText, TextEditingController controller) {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: Color(0xFF02BBD2)),
@@ -71,17 +71,28 @@ class ProfileScreen extends StatelessWidget {
       ),
       padding: EdgeInsets.symmetric(horizontal: 10.0),
       margin: EdgeInsets.symmetric(vertical: 5.0),
-      child: TextField(
-        controller: controller,
-        cursorColor: Colors.black,
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          focusedBorder: InputBorder.none,
-          enabledBorder: InputBorder.none,
-          errorBorder: InputBorder.none,
-          disabledBorder: InputBorder.none,
-          hintText: hintText,
-        ),
+      child: Row(
+        children: [
+          Icon(
+            icon,
+            color: Color(0xFF02BBD2),
+          ),
+          SizedBox(width: 10),
+          Expanded(
+            child: TextField(
+              controller: controller,
+              cursorColor: Colors.black,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                errorBorder: InputBorder.none,
+                disabledBorder: InputBorder.none,
+                hintText: hintText,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
