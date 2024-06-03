@@ -25,7 +25,7 @@ class ParkingDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Parking Detail"),
+        title: Text("Detalles"),
       ),
       body: FutureBuilder<ParkingLot>(
         future: getParkDetail(id),
@@ -88,11 +88,14 @@ class ParkingDetail extends StatelessWidget {
                   ],
                 ),
               ),
-              Text(
-                parkingLot.title,
-                style: TextStyle(
-                  fontSize: 30.0,
-                  color: Colors.black,
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  parkingLot.title,
+                  style: TextStyle(
+                    fontSize: 30.0,
+                    color: Colors.black,
+                  ),
                 ),
               ),
               SizedBox(height: 20),

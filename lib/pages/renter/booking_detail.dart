@@ -48,9 +48,14 @@ class ReservationDetailScreen extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: ListView(
                 children: [
-                  Text(
-                    reservation!.title,
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  Row(
+                    children: [
+                      Text(
+                        reservation!.title,
+                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(width: 5),
+                    ],
                   ),
                   SizedBox(height: 10),
                   Row(
