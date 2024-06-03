@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smartpark_app/pages/shared/navbar.dart';
+import 'package:smartpark_app/pages/owner/parking_lots.dart'; // Importa la pantalla ParkingLotsScreen
 
 class AddParkingLot extends StatelessWidget {
   const AddParkingLot({Key? key}) : super(key: key);
@@ -32,6 +33,7 @@ class AddParkingLot extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
+                    Navigator.pop(context); // Navega de regreso a la pantalla anterior (ParkingLotsScreen)
                   },
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white, backgroundColor: Color(0xFF02BBD2),
