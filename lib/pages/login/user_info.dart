@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:smartpark_app/pages/renter/home.dart';
+import 'package:smartpark_app/pages/shared/home.dart';
 
 class UserInfo extends StatefulWidget {
   const UserInfo({super.key});
