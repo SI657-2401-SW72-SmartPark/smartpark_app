@@ -1,16 +1,43 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smartpark_app/pages/shared/navbar.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
 
   @override
+  _ProfileScreenState createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  final TextEditingController _nombreController = TextEditingController();
+  final TextEditingController _correoController = TextEditingController();
+  final TextEditingController _numeroController = TextEditingController();
+  final TextEditingController _direccionController = TextEditingController();
+  final TextEditingController _cumpleanosController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String nombre = prefs.getString('nombre') ?? '';
+    String correo = prefs.getString('correo') ?? '';
+    String telefono = prefs.getString('telefono') ?? '';
+
+    setState(() {
+      _nombreController.text = nombre;
+      _correoController.text = correo;
+      _numeroController.text = telefono;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final TextEditingController _nombreController = TextEditingController(text: '');
-    final TextEditingController _correoController = TextEditingController(text: 'correo@example.com');
-    final TextEditingController _numeroController = TextEditingController(text: '');
-    final TextEditingController _direccionController = TextEditingController(text: '');
-    final TextEditingController _cumpleanosController = TextEditingController(text: '');
     return Scaffold(
       appBar: AppBar(
         title: Text('Perfil'),
@@ -36,6 +63,7 @@ class ProfileScreen extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
+                    // Lógica para editar el perfil
                   },
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white, backgroundColor: Color(0xFF02BBD2),
@@ -47,7 +75,10 @@ class ProfileScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                    await prefs.clear(); // Limpiar los datos de usuario al cerrar sesión
+                    Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
                   },
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white, backgroundColor: Color(0xFF02BBD2),
