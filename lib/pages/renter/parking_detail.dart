@@ -9,15 +9,16 @@ class ParkingDetail extends StatelessWidget {
   ParkingDetail({required this.id, Key? key}) : super(key: key);
 
   Future<ParkingLot> getParkDetail(int id) async {
-    var response = await http.get(Uri.https("dummyjson.com", 'products/$id'));
+    var response = await http.get(Uri.parse("https://modest-education-production.up.railway.app/api/v1/zona_aparcamiento/$id"));
     var parkingLotData = jsonDecode(response.body);
 
     return ParkingLot(
       parkingLotData["id"],
-      parkingLotData["title"],
-      parkingLotData["description"],
-      parkingLotData["images"][0],
-      parkingLotData["price"].toInt(),
+      parkingLotData["nombre"],
+      parkingLotData["descripcion"],
+      parkingLotData["imagen"],
+      parkingLotData["numeroEstacionamiento"],
+      parkingLotData["direccion"],
     );
   }
 
@@ -43,7 +44,7 @@ class ParkingDetail extends StatelessWidget {
               children: [
                 SizedBox(
                   width: double.infinity,
-                  child: Image.network(parkingLot!.imageUrl),
+                  child: Image.network(parkingLot!.imagen),
                 ),
                 scroll(parkingLot)
               ],
@@ -91,7 +92,7 @@ class ParkingDetail extends StatelessWidget {
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
-                  parkingLot.title,
+                  parkingLot.nombre,
                   style: TextStyle(
                     fontSize: 30.0,
                     color: Colors.black,
@@ -108,7 +109,7 @@ class ParkingDetail extends StatelessWidget {
                         Icon(Icons.attach_money),
                         SizedBox(width: 10),
                         Text(
-                          "El precio hora o fraccion es de S/" + parkingLot.price.toString(),
+                          "El precio hora o fraccion es de S/${parkingLot.numeroEstacionamiento}",
                         ),
                       ],
                     ),
@@ -124,7 +125,7 @@ class ParkingDetail extends StatelessWidget {
                     ),
                     SizedBox(height: 20),
                     Text(
-                      "Descripcion: \n" + parkingLot.description,
+                      "Descripción: \n" + parkingLot.descripcion,
                     ),
                     SizedBox(height: 20),
                     ElevatedButton(
@@ -153,4 +154,22 @@ class ParkingDetail extends StatelessWidget {
       },
     );
   }
+}
+
+class ParkingLot {
+  final int id;
+  final String nombre;
+  final String descripcion;
+  final String imagen;
+  final int numeroEstacionamiento;
+  final String direccion;
+
+  ParkingLot(
+      this.id,
+      this.nombre,
+      this.descripcion,
+      this.imagen,
+      this.numeroEstacionamiento,
+      this.direccion,
+      );
 }

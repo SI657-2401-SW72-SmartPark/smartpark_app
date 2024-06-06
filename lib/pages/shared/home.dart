@@ -12,30 +12,30 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late List<dynamic> _products;
-  late List<dynamic> _filteredProducts;
+  late List<dynamic> _parkinglots;
+  late List<dynamic> _filteredParkinglots;
 
   @override
   void initState() {
     super.initState();
-    _products = [];
-    _filteredProducts = [];
+    _parkinglots = [];
+    _filteredParkinglots = [];
     _getParkDetails();
   }
 
   Future<void> _getParkDetails() async {
-    var response = await http.get(Uri.https("dummyjson.com", 'products'));
+    var response = await http.get(Uri.parse("https://modest-education-production.up.railway.app/api/v1/zona_aparcamiento/todos"));
     var data = jsonDecode(response.body);
     setState(() {
-      _products = data['products'] as List<dynamic>;
-      _filteredProducts = List.from(_products);
+      _parkinglots = data as List<dynamic>;
+      _filteredParkinglots = List.from(_parkinglots);
     });
   }
 
-  void _filterProducts(String query) {
+  void _filterParkinglots(String query) {
     setState(() {
-      _filteredProducts = _products
-          .where((product) => product['title'].toLowerCase().contains(query.toLowerCase()))
+      _filteredParkinglots = _parkinglots
+          .where((parkinglot) => parkinglot['nombre'].toLowerCase().contains(query.toLowerCase()))
           .toList();
     });
   }
@@ -49,31 +49,30 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             icon: Icon(Icons.search),
             onPressed: () {
-              showSearch(context: context, delegate: ProductSearch(_products, _filterProducts));
+              showSearch(context: context, delegate: ParkingSearch(_parkinglots, _filterParkinglots));
             },
           ),
         ],
       ),
       body: Center(
         child: ListView.builder(
-          itemCount: _filteredProducts.length,
+          itemCount: _filteredParkinglots.length,
           itemBuilder: (context, index) {
-            var product = _filteredProducts[index];
+            var parkinglot = _filteredParkinglots[index];
             return GestureDetector(
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ParkingDetail(id: product['id']),
+                    builder: (context) => ParkingDetail(id: parkinglot['id']),
                   ),
                 );
               },
               child: CardHome(
-                title: product['title'],
-                description: product['description'],
-                price: (product['price'] as num).toInt(),
-                rating: (product['rating'] as num).toDouble(),
-                imageUrl: product['images'][0],
+                title: parkinglot['nombre'],
+                description: parkinglot['descripcion'],
+                price: parkinglot['numeroEstacionamiento'],
+                imageUrl: parkinglot['imagen'],
               ),
             );
           },
@@ -84,11 +83,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class ProductSearch extends SearchDelegate<String> {
-  final List<dynamic> products;
-  final Function(String) filterProducts;
+class ParkingSearch extends SearchDelegate<String> {
+  final List<dynamic> parkinglots;
+  final Function(String) filterParkinglots;
 
-  ProductSearch(this.products, this.filterProducts);
+  ParkingSearch(this.parkinglots, this.filterParkinglots);
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -97,7 +96,7 @@ class ProductSearch extends SearchDelegate<String> {
         icon: Icon(Icons.clear),
         onPressed: () {
           query = '';
-          filterProducts('');
+          filterParkinglots('');
         },
       ),
     ];
@@ -125,20 +124,20 @@ class ProductSearch extends SearchDelegate<String> {
 
   Widget _buildSuggestions() {
     final List<dynamic> filteredList = query.isEmpty
-        ? products
-        : products.where((product) =>
-        product['title'].toLowerCase().contains(query.toLowerCase()))
+        ? parkinglots
+        : parkinglots.where((parkinglot) =>
+        parkinglot['nombre'].toLowerCase().contains(query.toLowerCase()))
         .toList();
 
     return ListView.builder(
       itemCount: filteredList.length,
       itemBuilder: (context, index) {
-        final product = filteredList[index];
+        final parkinglot = filteredList[index];
         return ListTile(
-          title: Text(product['title']),
+          title: Text(parkinglot['nombre']),
           onTap: () {
-            query = product['title'];
-            filterProducts(query);
+            query = parkinglot['nombre'];
+            filterParkinglots(query);
             close(context, query);
           },
         );
@@ -151,7 +150,6 @@ class CardHome extends StatelessWidget {
   final String title;
   final String description;
   final int price;
-  final double rating;
   final String imageUrl;
 
   const CardHome({
@@ -159,7 +157,6 @@ class CardHome extends StatelessWidget {
     required this.title,
     required this.description,
     required this.price,
-    required this.rating,
     required this.imageUrl,
   }) : super(key: key);
 
@@ -201,7 +198,7 @@ class CardHome extends StatelessWidget {
                     children: List.generate(
                       5,
                           (index) => Icon(
-                        index < rating.round() ? Icons.star : Icons.star_border,
+                        index < (price / 10).round() ? Icons.star : Icons.star_border,
                         color: Colors.yellow,
                         size: 24,
                       ),
@@ -209,7 +206,7 @@ class CardHome extends StatelessWidget {
                   ),
                   SizedBox(height: 10),
                   Text(
-                    '\$$price',
+                    'S/$price',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ],
