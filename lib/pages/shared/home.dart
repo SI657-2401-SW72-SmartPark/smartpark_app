@@ -45,6 +45,12 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Principal'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushReplacementNamed(context, '/');
+          },
+        ),
         actions: [
           IconButton(
             icon: Icon(Icons.search),

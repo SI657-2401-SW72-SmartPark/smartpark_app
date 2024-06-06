@@ -38,7 +38,7 @@ class _ParkingLotsScreenState extends State<ParkingLotsScreen> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pushReplacementNamed(context, '/home');
           },
         ),
         actions: [
