@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smartpark_app/pages/shared/home.dart';
 import 'package:smartpark_app/pages/login/register.dart';
 
@@ -25,6 +26,7 @@ class _LoginPageState extends State<LoginPage> {
       for (var user in users) {
         if (user['email'] == _correo.text && user['cellphone'].toString() == _password.text) {
           isAuthenticated = true;
+          _saveUserDataLocally(user); // Guarda los datos del usuario localmente
           break;
         }
       }
@@ -37,6 +39,14 @@ class _LoginPageState extends State<LoginPage> {
     } else {
       _showSnackBar('Error en el servidor. Por favor, inténtelo de nuevo más tarde.');
     }
+  }
+
+  void _saveUserDataLocally(Map<String, dynamic> userData) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('nombre', userData['fullname']);
+    await prefs.setString('correo', userData['email']);
+    await prefs.setString('telefono', userData['cellphone'].toString());
+    // Puedes guardar más datos del usuario según sea necesario
   }
 
   void _showSnackBar(String message) {
