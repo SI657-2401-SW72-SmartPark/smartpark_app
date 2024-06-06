@@ -33,7 +33,7 @@ class AddParkingLot extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pop(context); // Navega de regreso a la pantalla anterior (ParkingLotsScreen)
+                    Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white, backgroundColor: Color(0xFF02BBD2),
