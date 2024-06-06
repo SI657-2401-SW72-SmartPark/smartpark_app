@@ -22,6 +22,15 @@ class ParkingDetail extends StatelessWidget {
     );
   }
 
+  Future<List<Comment>> getComments(int parkingLotId) async {
+    var response = await http.get(Uri.parse("https://modest-education-production.up.railway.app/api/v1/comentario/todos"));
+    var commentData = jsonDecode(response.body) as List;
+    return commentData
+        .where((comment) => comment['estacionamiento'] == parkingLotId)
+        .map((comment) => Comment.fromJson(comment))
+        .toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,91 +74,120 @@ class ParkingDetail extends StatelessWidget {
       maxChildSize: 1.0,
       minChildSize: 0.5,
       builder: (context, scrollController) {
-        return Container(
-          clipBehavior: Clip.hardEdge,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-          ),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 10, bottom: 25),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      height: 5,
-                      width: 35,
-                      color: Colors.black12,
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 20),
-                child: Text(
-                  parkingLot.nombre,
-                  style: TextStyle(
-                    fontSize: 30.0,
-                    color: Colors.black,
+        return FutureBuilder<List<Comment>>(
+          future: getComments(parkingLot.id),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text('Error: ${snapshot.error}'),
+                );
+              }
+
+              List<Comment>? comments = snapshot.data;
+
+              return Container(
+                clipBehavior: Clip.hardEdge,
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
                   ),
                 ),
-              ),
-              SizedBox(height: 20),
-              Container(
-                padding: EdgeInsets.all(20.0),
-                child: Column(
+                child: ListView(
+                  controller: scrollController,
                   children: [
-                    Row(
-                      children: [
-                        Icon(Icons.attach_money),
-                        SizedBox(width: 10),
-                        Text(
-                          "El precio hora o fraccion es de S/${parkingLot.numeroEstacionamiento}",
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 5),
-                    Row(
-                      children: [
-                        Icon(Icons.watch_later_outlined),
-                        SizedBox(width: 10),
-                        Text(
-                          "Lun a Dom 9:00 a 22:00 hrs",
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 20),
-                    Text(
-                      "Descripción: \n" + parkingLot.descripcion,
-                    ),
-                    SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => ReserveParking()),
-                        );
-                      },
-                      style: const ButtonStyle(
-                        backgroundColor: MaterialStatePropertyAll(Colors.orange),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10, bottom: 25),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            height: 5,
+                            width: 35,
+                            color: Colors.black12,
+                          ),
+                        ],
                       ),
-                      child: const Text(
-                        "Reservar",
+                    ),
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 20),
+                      child: Text(
+                        parkingLot.nombre,
                         style: TextStyle(
-                          color: Colors.white,
+                          fontSize: 30.0,
+                          color: Colors.black,
                         ),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    Container(
+                      padding: EdgeInsets.all(20.0),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.attach_money),
+                              SizedBox(width: 10),
+                              Text(
+                                "El precio hora o fraccion es de S/${parkingLot.numeroEstacionamiento}",
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 5),
+                          Row(
+                            children: [
+                              Icon(Icons.watch_later_outlined),
+                              SizedBox(width: 10),
+                              Text(
+                                "Lun a Dom 9:00 a 22:00 hrs",
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 20),
+                          Text(
+                            "Descripción: \n" + parkingLot.descripcion,
+                          ),
+                          SizedBox(height: 20),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => ReserveParking()),
+                              );
+                            },
+                            style: const ButtonStyle(
+                              backgroundColor: MaterialStatePropertyAll(Colors.orange),
+                            ),
+                            child: const Text(
+                              "Reservar",
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          Text(
+                            "Comentarios:",
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                          ...comments!.map((comment) => ListTile(
+                            title: Text(comment.descripcion),
+                            subtitle: Text("Puntuación: ${comment.punto}"),
+                          )),
+                        ],
                       ),
                     ),
                   ],
                 ),
-              ),
-            ],
-          ),
+              );
+            } else {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          },
         );
       },
     );
@@ -172,4 +210,30 @@ class ParkingLot {
       this.numeroEstacionamiento,
       this.direccion,
       );
+}
+
+class Comment {
+  final int id;
+  final String descripcion;
+  final int punto;
+  final int estacionamiento;
+  final int usuario;
+
+  Comment({
+    required this.id,
+    required this.descripcion,
+    required this.punto,
+    required this.estacionamiento,
+    required this.usuario,
+  });
+
+  factory Comment.fromJson(Map<String, dynamic> json) {
+    return Comment(
+      id: json['id'],
+      descripcion: json['descripcion'],
+      punto: json['punto'],
+      estacionamiento: json['estacionamiento'],
+      usuario: json['usuario'],
+    );
+  }
 }
