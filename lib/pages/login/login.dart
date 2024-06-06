@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:smartpark_app/pages/shared/home.dart';
 import 'package:smartpark_app/pages/login/register.dart';
 
@@ -12,10 +14,39 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _correo = TextEditingController();
   final TextEditingController _password = TextEditingController();
+  final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+
+  Future<void> _login() async {
+    final response = await http.get(Uri.parse("https://modest-education-production.up.railway.app/api/v1/usuario/todos"));
+    if (response.statusCode == 200) {
+      List<dynamic> users = jsonDecode(response.body);
+      bool isAuthenticated = false;
+
+      for (var user in users) {
+        if (user['email'] == _correo.text && user['cellphone'].toString() == _password.text) {
+          isAuthenticated = true;
+          break;
+        }
+      }
+
+      if (isAuthenticated) {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      } else {
+        _showSnackBar('Correo electrónico o contraseña incorrectos');
+      }
+    } else {
+      _showSnackBar('Error en el servidor. Por favor, inténtelo de nuevo más tarde.');
+    }
+  }
+
+  void _showSnackBar(String message) {
+    _scaffoldMessengerKey.currentState?.showSnackBar(SnackBar(content: Text(message)));
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldMessengerKey,
       body: Center(
         child: SingleChildScrollView(
           child: Container(
@@ -61,15 +92,13 @@ class _LoginPageState extends State<LoginPage> {
                   child: TextField(
                     controller: _correo,
                     cursorColor: Colors.black,
+                    style: TextStyle(color: Colors.black),
                     decoration: const InputDecoration(
                         border: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
                         contentPadding: EdgeInsets.only(left: 15, bottom: 11, top: 11, right: 15),
-                        hintText: "Correo electronico",
-                        prefixIcon: Icon(Icons.person)
+                        hintText: "Correo electrónico",
+                        hintStyle: TextStyle(color: Colors.grey),
+                        prefixIcon: Icon(Icons.person, color: Colors.grey)
                     ),
                   ),
                 ),
@@ -82,28 +111,25 @@ class _LoginPageState extends State<LoginPage> {
                   child: TextField(
                     cursorColor: Colors.black,
                     controller: _password,
+                    obscureText: true,
+                    style: TextStyle(color: Colors.black),
                     decoration: const InputDecoration(
                         border: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
                         contentPadding: EdgeInsets.only(left: 15, bottom: 11, top: 11, right: 15),
                         hintText: "Contraseña",
-                        prefixIcon: Icon(Icons.key)
+                        hintStyle: TextStyle(color: Colors.grey),
+                        prefixIcon: Icon(Icons.key, color: Colors.grey)
                     ),
                   ),
                 ),
                 SizedBox(height: 20.0,),
                 ElevatedButton(
-                  onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
-                  },
+                  onPressed: _login,
                   style: ButtonStyle(
                     backgroundColor: MaterialStatePropertyAll(Colors.lightBlueAccent),
                   ),
                   child: const Text(
-                    "Iniciar Sesion",
+                    "Iniciar Sesión",
                     style: TextStyle(
                       color: Colors.white,
                     ),
