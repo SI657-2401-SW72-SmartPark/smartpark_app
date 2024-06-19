@@ -1,3 +1,4 @@
+/*
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -221,6 +222,91 @@ class CardHome extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+*/
+
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:smartpark_app/pages/renter/parking_detail.dart';
+import 'package:smartpark_app/pages/shared/navbar.dart';
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late GoogleMapController _mapController;
+  late List<dynamic> _parkinglots;
+  Set<Marker> _markers = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _parkinglots = [];
+    _getParkDetails();
+  }
+
+  Future<void> _getParkDetails() async {
+    var response = await http.get(Uri.parse("https://modest-education-production.up.railway.app/api/v1/zona_aparcamiento/todos"));
+    var data = jsonDecode(response.body);
+    setState(() {
+      _parkinglots = data as List<dynamic>;
+      _addMarkers();
+    });
+  }
+
+  void _addMarkers() {
+    _markers.clear();
+    for (var parkinglot in _parkinglots) {
+      var description = parkinglot['descripcion'].split(', ');
+      var lat = double.parse(description[0]);
+      var lng = double.parse(description[1]);
+      _markers.add(
+        Marker(
+          markerId: MarkerId(parkinglot['id'].toString()),
+          position: LatLng(lat, lng),
+          infoWindow: InfoWindow(
+            title: parkinglot['nombre'],
+            snippet: parkinglot['direccion'],
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ParkingDetail(id: parkinglot['id']),
+                ),
+              );
+            },
+          ),
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Mapa de Aparcamientos'),
+      ),
+      body: GoogleMap(
+        initialCameraPosition: CameraPosition(
+          target: LatLng(-12.100792369834554, -77.00192282713815),
+          zoom: 12.0,
+        ),
+        markers: _markers,
+        onMapCreated: (controller) {
+          _mapController = controller;
+        },
+      ),
+      bottomNavigationBar: NavBar(),
     );
   }
 }
