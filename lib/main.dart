@@ -15,10 +15,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      supportedLocales: [
-        const Locale('en', ''),
-        const Locale('es', ''),
-      ],
       debugShowCheckedModeBanner: false,
       title: 'SmartPark',
       theme: ThemeData(
