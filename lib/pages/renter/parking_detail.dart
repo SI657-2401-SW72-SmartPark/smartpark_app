@@ -22,13 +22,28 @@ class ParkingDetail extends StatelessWidget {
     );
   }
 
-  Future<List<Comment>> getComments(int parkingLotId) async {
+  Future<List<Comment>> getCommentsWithUsers(int parkingLotId) async {
     var response = await http.get(Uri.parse("https://modest-education-production.up.railway.app/api/v1/comentario/todos"));
     var commentData = jsonDecode(response.body) as List;
-    return commentData
+
+    var comments = commentData
         .where((comment) => comment['estacionamiento'] == parkingLotId)
         .map((comment) => Comment.fromJson(comment))
         .toList();
+
+    var users = await getUsers();
+
+    comments.forEach((comment) {
+      var user = users.firstWhere((user) => user.id == comment.usuario);
+      comment.setFullname(user.fullname);
+    });
+
+    return comments;
+  }
+  Future<List<User>> getUsers() async {
+    var response = await http.get(Uri.parse("https://modest-education-production.up.railway.app/api/v1/usuario/todos"));
+    var userData = jsonDecode(response.body) as List;
+    return userData.map((user) => User.fromJson(user)).toList();
   }
 
   @override
@@ -75,7 +90,7 @@ class ParkingDetail extends StatelessWidget {
       minChildSize: 0.5,
       builder: (context, scrollController) {
         return FutureBuilder<List<Comment>>(
-          future: getComments(parkingLot.id),
+          future: getCommentsWithUsers(parkingLot.id),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasError) {
@@ -147,7 +162,7 @@ class ParkingDetail extends StatelessWidget {
                           ),
                           SizedBox(height: 20),
                           Text(
-                            "Descripción: \n" + parkingLot.descripcion,
+                            "Descripción: \n" + parkingLot.direccion,
                           ),
                           SizedBox(height: 20),
                           ElevatedButton(
@@ -173,8 +188,14 @@ class ParkingDetail extends StatelessWidget {
                             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                           ),
                           ...comments!.map((comment) => ListTile(
-                            title: Text(comment.descripcion),
-                            subtitle: Text("Puntuación: ${comment.punto}"),
+                            title: Text(comment.fullname),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(comment.descripcion),
+                                Text("Puntuación: ${comment.punto}"),
+                              ],
+                            ),
                           )),
                         ],
                       ),
@@ -218,6 +239,7 @@ class Comment {
   final int punto;
   final int estacionamiento;
   final int usuario;
+  String fullname;
 
   Comment({
     required this.id,
@@ -225,6 +247,7 @@ class Comment {
     required this.punto,
     required this.estacionamiento,
     required this.usuario,
+    this.fullname = "",
   });
 
   factory Comment.fromJson(Map<String, dynamic> json) {
@@ -234,6 +257,24 @@ class Comment {
       punto: json['punto'],
       estacionamiento: json['estacionamiento'],
       usuario: json['usuario'],
+    );
+  }
+
+  void setFullname(String fullname) {
+    this.fullname = fullname;
+  }
+}
+
+class User {
+  final int id;
+  final String fullname;
+
+  User({required this.id, required this.fullname});
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['id'],
+      fullname: json['fullname'],
     );
   }
 }
