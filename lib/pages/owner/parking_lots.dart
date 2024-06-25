@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smartpark_app/pages/owner/parking_lots_detail.dart';
 import 'package:smartpark_app/pages/shared/navbar.dart';
 import 'package:smartpark_app/pages/owner/add_parking_lot.dart';
 
 class ParkingLotsScreen extends StatefulWidget {
-  const ParkingLotsScreen({super.key});
+  const ParkingLotsScreen({Key? key});
 
   @override
   State<ParkingLotsScreen> createState() => _ParkingLotsScreenState();
@@ -14,20 +15,32 @@ class ParkingLotsScreen extends StatefulWidget {
 
 class _ParkingLotsScreenState extends State<ParkingLotsScreen> {
   late List<dynamic> _parkinglots;
+  late int _userId;
 
   @override
   void initState() {
     super.initState();
     _parkinglots = [];
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _userId = prefs.getInt('id')!;
+    });
     _getParkinglots();
   }
 
   Future<void> _getParkinglots() async {
-    var response = await http.get(Uri.https("dummyjson.com", 'products'));
-    var data = jsonDecode(response.body);
-    setState(() {
-      _parkinglots = data['products'] as List<dynamic>;
-    });
+    var response = await http.get(Uri.parse("https://modest-education-production.up.railway.app/api/v1/zona_aparcamiento/todos"));
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      setState(() {
+        _parkinglots = data.where((parkinglot) => parkinglot['usuario'].toString() == _userId.toString()).toList();
+      });
+    } else {
+    }
   }
 
   @override
@@ -56,26 +69,34 @@ class _ParkingLotsScreenState extends State<ParkingLotsScreen> {
         ],
       ),
       body: Center(
-        child: ListView.builder(
+        child: _parkinglots.isEmpty
+            ? CircularProgressIndicator()
+            : ListView.builder(
           itemCount: _parkinglots.length,
           itemBuilder: (context, index) {
-            var parkinglots = _parkinglots[index];
+            var parkinglot = _parkinglots[index];
             return GestureDetector(
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ParkingLotsDetailScreen(id: parkinglots['id']),
+                    builder: (context) => ParkingLotsDetailScreen(id: parkinglot['id']),
                   ),
                 );
               },
               child: ParkingLotsCard(
-                title: parkinglots['title'],
-                address: 'Av. Ejemplo 123',
-                date: '19-01-2022',
-                time: 'De 9:30 PM a 11:00 PM',
-                status: 'Activo',
-                imageUrl: parkinglots['images'][0],
+                title: parkinglot['nombre'],
+                address: parkinglot['direccion'],
+                date: '19-01-2022', // Ajustar según los datos reales
+                time: 'De 9:30 PM a 11:00 PM', // Ajustar según los datos reales
+                status: 'Activo', // Ajustar según los datos reales
+                imageUrl: parkinglot['imagen'],
+                onDelete: () {
+                  // Lógica para eliminar el estacionamiento si es necesario
+                },
+                onEdit: () {
+                  // Lógica para editar el estacionamiento si es necesario
+                },
               ),
             );
           },
@@ -85,7 +106,6 @@ class _ParkingLotsScreenState extends State<ParkingLotsScreen> {
     );
   }
 }
-
 
 class ParkingLotsCard extends StatelessWidget {
   final String title;
