@@ -28,13 +28,18 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _getParkDetails() async {
-    var response = await http.get(Uri.parse("https://modest-education-production.up.railway.app/api/v1/zona_aparcamiento/todos"));
-    var data = jsonDecode(response.body);
-    setState(() {
-      _parkinglots = data as List<dynamic>;
-      _filteredParkinglots = List.from(_parkinglots);
-      _addMarkers();
-    });
+    var url = Uri.parse("https://modest-education-production.up.railway.app/api/v1/zona_aparcamiento/todos");
+    var response = await http.get(url);
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      setState(() {
+        _parkinglots = data as List<dynamic>;
+        _filteredParkinglots = List.from(_parkinglots);
+        _addMarkers();
+      });
+    } else {
+      throw Exception('Failed to load parking lots');
+    }
   }
 
   void _filterParkinglots(String query) {
@@ -48,27 +53,34 @@ class _HomeScreenState extends State<HomeScreen> {
   void _addMarkers() {
     _markers.clear();
     for (var parkinglot in _parkinglots) {
-      var description = parkinglot['descripcion'].split(', ');
-      var lat = double.parse(description[0]);
-      var lng = double.parse(description[1]);
-      _markers.add(
-        Marker(
-          markerId: MarkerId(parkinglot['id'].toString()),
-          position: LatLng(lat, lng),
-          infoWindow: InfoWindow(
-            title: parkinglot['nombre'],
-            snippet: parkinglot['direccion'],
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ParkingDetail(id: parkinglot['id']),
+      var description = parkinglot['descripcion'];
+      if (description != null && description.isNotEmpty) {
+        var parts = description.split(', ');
+        if (parts.length == 2) {
+          var lat = double.tryParse(parts[0]);
+          var lng = double.tryParse(parts[1]);
+          if (lat != null && lng != null) {
+            _markers.add(
+              Marker(
+                markerId: MarkerId(parkinglot['id'].toString()),
+                position: LatLng(lat, lng),
+                infoWindow: InfoWindow(
+                  title: parkinglot['nombre'],
+                  snippet: parkinglot['direccion'],
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ParkingDetail(id: parkinglot['id']),
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
-          ),
-        ),
-      );
+              ),
+            );
+          }
+        }
+      }
     }
   }
 
@@ -100,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildMapView() {
     return GoogleMap(
       initialCameraPosition: CameraPosition(
-        target: LatLng(-12.100792369834554, -77.00192282713815),
+        target: LatLng(-12.046374, -77.042793), // Lima, Peru as default location
         zoom: 12.0,
       ),
       markers: _markers,
@@ -111,30 +123,28 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildListView() {
-    return Center(
-      child: ListView.builder(
-        itemCount: _filteredParkinglots.length,
-        itemBuilder: (context, index) {
-          var parkinglot = _filteredParkinglots[index];
-          return GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ParkingDetail(id: parkinglot['id']),
-                ),
-              );
-            },
-            child: CardHome(
-              title: parkinglot['nombre'],
-              description: parkinglot['direccion'],
-              location: parkinglot['localizacion'],
-              price: parkinglot['numeroEstacionamiento'],
-              imageUrl: parkinglot['imagen'],
-            ),
-          );
-        },
-      ),
+    return ListView.builder(
+      itemCount: _filteredParkinglots.length,
+      itemBuilder: (context, index) {
+        var parkinglot = _filteredParkinglots[index];
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ParkingDetail(id: parkinglot['id']),
+              ),
+            );
+          },
+          child: CardHome(
+            title: parkinglot['nombre'],
+            description: parkinglot['direccion'],
+            location: parkinglot['localizacion'],
+            price: parkinglot['numeroEstacionamiento'],
+            imageUrl: parkinglot['imagen'],
+          ),
+        );
+      },
     );
   }
 }
