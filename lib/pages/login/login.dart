@@ -43,10 +43,10 @@ class _LoginPageState extends State<LoginPage> {
 
   void _saveUserDataLocally(Map<String, dynamic> userData) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('id', userData['id']);
     await prefs.setString('nombre', userData['fullname']);
     await prefs.setString('correo', userData['email']);
     await prefs.setString('telefono', userData['cellphone'].toString());
-    // Puedes guardar más datos del usuario según sea necesario
   }
 
   void _showSnackBar(String message) {
