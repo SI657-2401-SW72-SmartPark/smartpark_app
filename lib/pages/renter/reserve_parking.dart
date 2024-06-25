@@ -25,20 +25,21 @@ class _ReserveParkingState extends State<ReserveParking> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Reservar estacionamiento'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushReplacementNamed(context, '/home');
+          },
+        ),
+      ),
       body: Container(
         margin: EdgeInsets.only(top: 100.0),
         padding: EdgeInsets.all(20.0),
         child: Center(
           child: Column(
             children: [
-              const Text(
-                "Reservar Estacionamiento",
-                style: TextStyle(
-                    color: Colors.lightBlueAccent,
-                    fontSize: 20.0
-                ),
-              ),
-              SizedBox(height: 20.0,),
               Container(
                 decoration: BoxDecoration(
                     border: Border.all(color: Colors.blueAccent),
