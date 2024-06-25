@@ -1,7 +1,7 @@
-/*
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:smartpark_app/pages/renter/parking_detail.dart';
 import 'package:smartpark_app/pages/shared/navbar.dart';
 
@@ -13,8 +13,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late GoogleMapController _mapController;
   late List<dynamic> _parkinglots;
   late List<dynamic> _filteredParkinglots;
+  Set<Marker> _markers = {};
+  bool _showMapView = false;
 
   @override
   void initState() {
@@ -30,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _parkinglots = data as List<dynamic>;
       _filteredParkinglots = List.from(_parkinglots);
+      _addMarkers();
     });
   }
 
@@ -41,114 +45,96 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void _addMarkers() {
+    _markers.clear();
+    for (var parkinglot in _parkinglots) {
+      var description = parkinglot['descripcion'].split(', ');
+      var lat = double.parse(description[0]);
+      var lng = double.parse(description[1]);
+      _markers.add(
+        Marker(
+          markerId: MarkerId(parkinglot['id'].toString()),
+          position: LatLng(lat, lng),
+          infoWindow: InfoWindow(
+            title: parkinglot['nombre'],
+            snippet: parkinglot['direccion'],
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ParkingDetail(id: parkinglot['id']),
+                ),
+              );
+            },
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Principal'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pushReplacementNamed(context, '/');
-          },
-        ),
+        title: Text(_showMapView ? 'Mapa de Aparcamientos' : 'Lista de Aparcamientos'),
         actions: [
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              showSearch(context: context, delegate: ParkingSearch(_parkinglots, _filterParkinglots));
+          ToggleButtons(
+            isSelected: [_showMapView, !_showMapView],
+            onPressed: (int index) {
+              setState(() {
+                _showMapView = index == 0;
+              });
             },
+            children: [
+              Icon(Icons.map),
+              Icon(Icons.list),
+            ],
           ),
         ],
       ),
-      body: Center(
-        child: ListView.builder(
-          itemCount: _filteredParkinglots.length,
-          itemBuilder: (context, index) {
-            var parkinglot = _filteredParkinglots[index];
-            return GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ParkingDetail(id: parkinglot['id']),
-                  ),
-                );
-              },
-              child: CardHome(
-                title: parkinglot['nombre'],
-                description: parkinglot['descripcion'],
-                price: parkinglot['numeroEstacionamiento'],
-                imageUrl: parkinglot['imagen'],
-              ),
-            );
-          },
-        ),
-      ),
+      body: _showMapView ? _buildMapView() : _buildListView(),
       bottomNavigationBar: NavBar(),
     );
   }
-}
 
-class ParkingSearch extends SearchDelegate<String> {
-  final List<dynamic> parkinglots;
-  final Function(String) filterParkinglots;
-
-  ParkingSearch(this.parkinglots, this.filterParkinglots);
-
-  @override
-  List<Widget> buildActions(BuildContext context) {
-    return [
-      IconButton(
-        icon: Icon(Icons.clear),
-        onPressed: () {
-          query = '';
-          filterParkinglots('');
-        },
+  Widget _buildMapView() {
+    return GoogleMap(
+      initialCameraPosition: CameraPosition(
+        target: LatLng(-12.100792369834554, -77.00192282713815),
+        zoom: 12.0,
       ),
-    ];
-  }
-
-  @override
-  Widget buildLeading(BuildContext context) {
-    return IconButton(
-      icon: Icon(Icons.arrow_back),
-      onPressed: () {
-        close(context, '');
+      markers: _markers,
+      onMapCreated: (controller) {
+        _mapController = controller;
       },
     );
   }
 
-  @override
-  Widget buildResults(BuildContext context) {
-    return _buildSuggestions();
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    return _buildSuggestions();
-  }
-
-  Widget _buildSuggestions() {
-    final List<dynamic> filteredList = query.isEmpty
-        ? parkinglots
-        : parkinglots.where((parkinglot) =>
-        parkinglot['nombre'].toLowerCase().contains(query.toLowerCase()))
-        .toList();
-
-    return ListView.builder(
-      itemCount: filteredList.length,
-      itemBuilder: (context, index) {
-        final parkinglot = filteredList[index];
-        return ListTile(
-          title: Text(parkinglot['nombre']),
-          onTap: () {
-            query = parkinglot['nombre'];
-            filterParkinglots(query);
-            close(context, query);
-          },
-        );
-      },
+  Widget _buildListView() {
+    return Center(
+      child: ListView.builder(
+        itemCount: _filteredParkinglots.length,
+        itemBuilder: (context, index) {
+          var parkinglot = _filteredParkinglots[index];
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ParkingDetail(id: parkinglot['id']),
+                ),
+              );
+            },
+            child: CardHome(
+              title: parkinglot['nombre'],
+              description: parkinglot['direccion'],
+              location: parkinglot['localizacion'],
+              price: parkinglot['numeroEstacionamiento'],
+              imageUrl: parkinglot['imagen'],
+            ),
+          );
+        },
+      ),
     );
   }
 }
@@ -156,6 +142,7 @@ class ParkingSearch extends SearchDelegate<String> {
 class CardHome extends StatelessWidget {
   final String title;
   final String description;
+  final String location;
   final int price;
   final String imageUrl;
 
@@ -163,6 +150,7 @@ class CardHome extends StatelessWidget {
     Key? key,
     required this.title,
     required this.description,
+    required this.location,
     required this.price,
     required this.imageUrl,
   }) : super(key: key);
@@ -201,6 +189,11 @@ class CardHome extends StatelessWidget {
                     style: TextStyle(fontSize: 18),
                   ),
                   SizedBox(height: 10),
+                  Text(
+                    location,
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  SizedBox(height: 10),
                   Row(
                     children: List.generate(
                       5,
@@ -222,91 +215,6 @@ class CardHome extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-*/
-
-import 'dart:convert';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:smartpark_app/pages/renter/parking_detail.dart';
-import 'package:smartpark_app/pages/shared/navbar.dart';
-
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
-
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  late GoogleMapController _mapController;
-  late List<dynamic> _parkinglots;
-  Set<Marker> _markers = {};
-
-  @override
-  void initState() {
-    super.initState();
-    _parkinglots = [];
-    _getParkDetails();
-  }
-
-  Future<void> _getParkDetails() async {
-    var response = await http.get(Uri.parse("https://modest-education-production.up.railway.app/api/v1/zona_aparcamiento/todos"));
-    var data = jsonDecode(response.body);
-    setState(() {
-      _parkinglots = data as List<dynamic>;
-      _addMarkers();
-    });
-  }
-
-  void _addMarkers() {
-    _markers.clear();
-    for (var parkinglot in _parkinglots) {
-      var description = parkinglot['descripcion'].split(', ');
-      var lat = double.parse(description[0]);
-      var lng = double.parse(description[1]);
-      _markers.add(
-        Marker(
-          markerId: MarkerId(parkinglot['id'].toString()),
-          position: LatLng(lat, lng),
-          infoWindow: InfoWindow(
-            title: parkinglot['nombre'],
-            snippet: parkinglot['direccion'],
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ParkingDetail(id: parkinglot['id']),
-                ),
-              );
-            },
-          ),
-        ),
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Mapa de Aparcamientos'),
-      ),
-      body: GoogleMap(
-        initialCameraPosition: CameraPosition(
-          target: LatLng(-12.100792369834554, -77.00192282713815),
-          zoom: 12.0,
-        ),
-        markers: _markers,
-        onMapCreated: (controller) {
-          _mapController = controller;
-        },
-      ),
-      bottomNavigationBar: NavBar(),
     );
   }
 }
