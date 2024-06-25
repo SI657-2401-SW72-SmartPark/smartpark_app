@@ -14,8 +14,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController _nombreController = TextEditingController();
   final TextEditingController _correoController = TextEditingController();
   final TextEditingController _numeroController = TextEditingController();
-  final TextEditingController _direccionController = TextEditingController();
-  final TextEditingController _cumpleanosController = TextEditingController();
 
   @override
   void initState() {
@@ -56,8 +54,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               _buildProfileTextField(Icons.person, 'Nombre de usuario', _nombreController),
               _buildProfileTextField(Icons.email, 'Correo electrónico', _correoController),
               _buildProfileTextField(Icons.phone, 'Número de teléfono', _numeroController),
-              _buildProfileTextField(Icons.home, 'Dirección de domicilio', _direccionController),
-              _buildProfileTextField(Icons.cake, 'Fecha de cumpleaños', _cumpleanosController),
               SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
@@ -77,7 +73,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: ElevatedButton(
                   onPressed: () async {
                     SharedPreferences prefs = await SharedPreferences.getInstance();
-                    await prefs.clear(); // Limpiar los datos de usuario al cerrar sesión
+                    await prefs.clear();
                     Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
                   },
                   style: ElevatedButton.styleFrom(
