@@ -26,6 +26,7 @@ class _UserInfoState extends State<UserInfo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: Container(
         margin: EdgeInsets.only(top: 200.0),
         padding: EdgeInsets.all(20.0),
